@@ -10,7 +10,6 @@ function love.load()
     avion.y = 400
     avion.sprite = love.graphics.newImage('sprites/test_avions.png')
     avion.grid = anim8.newGrid(32, 31, avion.sprite:getWidth(), avion.sprite:getHeight(), 3, 135, 1)
-
     avion.animation = anim8.newAnimation(avion.grid('1-8', 1), 0.3)
 
     Pnj.x = 0
@@ -18,6 +17,7 @@ function love.load()
     Pnj.sprite = love.graphics.newImage('sprites/Pnj-original.png')
     Pnj.grid = anim8.newGrid(175, 245, Pnj.sprite:getWidth(), Pnj.sprite:getHeight(), 0, 1070, 4)
     Pnj.animation = anim8.newAnimation(Pnj.grid('1-7', '1-2'), 0.1)
+
 end
 
 function love.update(dt)
