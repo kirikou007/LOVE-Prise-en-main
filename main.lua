@@ -1,34 +1,42 @@
-local avion = {}
-Pnj = {}
+_dino = {}
 
 function love.load()
-    
-    local anim8 = require'anim8/anim8'
-    love.graphics.setDefaultFilter('nearest', 'nearest')
+    local wf = require "libraries/windfield/windfield"
+    local anim8 = require "libraries/anim8/anim8"
+    love.graphics.setDefaultFilter("nearest", "nearest")
 
-    avion.x = 400
-    avion.y = 400
-    avion.sprite = love.graphics.newImage('sprites/test_avions.png')
-    avion.grid = anim8.newGrid(32, 31, avion.sprite:getWidth(), avion.sprite:getHeight(), 3, 135, 1)
-    avion.animation = anim8.newAnimation(avion.grid('1-8', 1), 0.3)
+    world = wf.newWorld(0, 0, true)
+    world:setGravity(0, 512)
+    world:addCollisionClass("sol")
+    world:addCollisionClass("dino")
 
-    Pnj.x = 0
-    Pnj.y = 0
-    Pnj.sprite = love.graphics.newImage('sprites/Pnj-original.png')
-    Pnj.grid = anim8.newGrid(175, 245, Pnj.sprite:getWidth(), Pnj.sprite:getHeight(), 0, 1070, 4)
-    Pnj.animation = anim8.newAnimation(Pnj.grid('1-7', '1-2'), 0.1)
+    _dino.x = 100 - 50 / 2
+    _dino.y = 440 - 50 / 2
+    _dino.sprite = love.graphics.newImage("sprites/_dino.png")
+    _dino.grid = anim8.newGrid(50, 50, _dino.sprite:getWidth(), _dino.sprite:getHeight())
+    _dino.animation = anim8.newAnimation(_dino.grid("4-5", 1), 0.3)
 
+    _dino.hitbox = world:newRectangleCollider(_dino.x, _dino.y, 50, 50)
+    _dino.hitbox:setCollisionClass("dino")
+
+    sol = world:newRectangleCollider(0, 475, 800, 125)
+    sol:setType("static")
+    sol:setCollisionClass("sol")
 end
 
 function love.update(dt)
-
-    avion.animation:update(dt)
-    Pnj.animation:update(dt)
-
+    _dino.animation:update(dt)
+    world:update(dt)
 end
 
 function love.draw()
+    love.graphics.setBackgroundColor(0.5, 0.5, 0.5)
+    world:draw()
+    _dino.animation:draw(_dino.sprite, _dino.x, _dino.y, nil, 1.2)
+end
 
-    avion.animation:draw(avion.sprite, avion.x, avion.y, nil, 5)    
-    Pnj.animation:draw(Pnj.sprite, Pnj.x, Pnj.y)
+function love.keypressed(key)
+    if key == "space" then
+        _dino.hitbox:applyLinearImpulse(0, -1000)
+    end
 end
